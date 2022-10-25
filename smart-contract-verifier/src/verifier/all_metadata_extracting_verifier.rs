@@ -129,7 +129,11 @@ impl<T: Source> Verifier<T> {
         &self,
         contract: &Contract,
         contract_modified: &Contract,
-    ) -> Result<(Option<ethabi::Contract>, Option<Bytes>), VerificationErrorKind> {
+    ) -> Result<(ethabi::Contract, Option<Bytes>), VerificationErrorKind> {
+        let abi = contract
+            .get_abi()
+            .ok_or_else(|| VerificationErrorKind::InternalError("missing abi".into()))?;
+
         let bytecode = Bytecode::try_from(contract).map_err(|err| match err {
             BytecodeInitError::Empty => VerificationErrorKind::AbstractContract,
             // Corresponding bytecode was not linked properly
@@ -145,15 +149,13 @@ impl<T: Source> Verifier<T> {
 
         Self::compare_creation_tx_inputs(&self.remote_bytecode, &local_bytecode)?;
 
-        let abi = contract.get_abi().map(|abi| abi.into_owned());
-
         let constructor_args = Self::extract_constructor_args(
             self.remote_bytecode.bytecode(),
             local_bytecode.bytecode(),
-            abi.as_ref().and_then(|abi| abi.constructor()),
+            abi.constructor(),
         )?;
 
-        Ok((abi, constructor_args))
+        Ok((abi.into_owned(), constructor_args))
     }
 
     fn compare_creation_tx_inputs(

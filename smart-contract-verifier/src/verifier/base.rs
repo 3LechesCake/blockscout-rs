@@ -7,7 +7,7 @@ use crate::DisplayBytes;
 pub struct VerificationSuccess {
     pub file_path: String,
     pub contract_name: String,
-    pub abi: Option<ethabi::Contract>,
+    pub abi: ethabi::Contract,
     pub constructor_args: Option<DisplayBytes>,
 }
 

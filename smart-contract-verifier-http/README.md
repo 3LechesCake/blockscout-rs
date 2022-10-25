@@ -245,8 +245,7 @@ If verification succeeds, the service returns 200 with a success status:
     // (optional) automatically extracted from creation transaction input
     // constructor arguments used for deploying verified contract
     "constructor_arguments": "0xcafecafecafe",
-    // (optional) contract abi (https://docs.soliditylang.org/en/latest/abi-spec.html?highlight=abi#json);
-    // is `null` for Yul contracts
+    // (https://docs.soliditylang.org/en/latest/abi-spec.html?highlight=abi#json)
     "abi": "[ { ... } ]"
   },
   // Status of 0 indicates successful verification
